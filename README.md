@@ -1,4 +1,6 @@
 # douyin
+## flutter学习作品，结合了抖音和小红书
+### 视频数据每小时更新一次，如视频播发失败，是地址失效，等待更新后即可
 
 ![](https://toutiaobyte.oss-cn-beijing.aliyuncs.com/image/11.png?versionId=CAEQPxiBgMDu.7Oi0hciIGJiNjUyYzg0ODQ2NDQ1MGNhMTIzMjQzMGMwMmVkYjc1)
 ![](https://toutiaobyte.oss-cn-beijing.aliyuncs.com/image/16.png?versionId=CAEQPxiBgMCTgbSi0hciIGIzYTU2MzczZjIxMzRmNDliOWFiMTczMGFhNjEyOTQw)
