@@ -58,15 +58,13 @@ class _MaincotentState extends State<Maincotent> {
   @override
   void initState() {
     super.initState();
-
+    getData();
     controller.addListener(() {
-      if (controller.position.pixels >=
-          controller.position.maxScrollExtent - 10) {
+      if (controller.position.pixels == controller.position.maxScrollExtent) {
         print('加载更多$key');
         getData();
       }
     });
-    getData();
   }
 
   getData() async {
