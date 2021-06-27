@@ -280,20 +280,20 @@ class _MainItemState extends State<MainItem>
   @override
   void initState() {
     super.initState();
+    getData();
 
     controller.addListener(() {
-      if (controller.position.pixels >=
-          controller.position.maxScrollExtent - 50) {
+      if (controller.position.pixels == controller.position.maxScrollExtent) {
         print('加载更多$key');
         getData();
       }
     });
-    getData();
   }
 
   getData() async {
     Response re =
         await Dio().get('http://101.200.141.108:8080/douyin/test?key=$key');
+    print('k是$key');
     key++;
     setState(() {
       // print(re.data);
