@@ -1,53 +1,45 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_tabs/extended_tabs.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:xiao/RecommendProvider.dart';
 import 'package:xiao/circileDetail.dart';
 import 'package:xiao/homePage.dart';
-import 'package:xiao/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
-class FriendPage extends StatefulWidget {
-  FriendPage({Key key, this.provider}) : super(key: key);
-  RecommendProvider provider;
+class NotePage extends StatelessWidget {
+  const NotePage({Key key}) : super(key: key);
+
   @override
-  _FriendPageState createState() => _FriendPageState();
+  Widget build(BuildContext context) {
+    print('pppppppppppppppppp');
+    return NotePage1();
+  }
 }
 
-class _FriendPageState extends State<FriendPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  TabController tabController;
+class NotePage1 extends StatefulWidget {
+  NotePage1({Key key}) : super(key: key);
+
+  @override
+  _NotePageState createState() => _NotePageState();
+}
+
+//singticker 和autokeepalive会重复
+class _NotePageState extends State<NotePage1> {
   ScrollController controller = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    print('我是friend初始化');
-    tabController = TabController(length: 3, vsync: this, initialIndex: 1);
-  }
-
-  @override
-  void deactivate() {
-    print('de');
-    bool isBack = ModalRoute.of(context).isCurrent;
-    if (isBack) {
-      // 限于从其他页面返回到当前页面时执行，首次进入当前页面不执行
-      // 注：此方法在iOS手势返回时，不执行此处
-      print('从其他页面返回到${widget.runtimeType}页');
-    } else {
-      // 离开当前页面或退出当前页面时执行
-      print('离开或退出${widget.runtimeType}页');
-    }
-    super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
-    double screenwidth = MediaQuery.of(context).size.width;
-
-    super.build(context);
+    print('我是notepage');
     return Scaffold(
         appBar: AppBar(
           leading: Icon(
@@ -69,40 +61,38 @@ class _FriendPageState extends State<FriendPage>
           backgroundColor: Colors.white,
           toolbarHeight: 35,
           centerTitle: true,
-          // backgroundColor: Theme.of(context).primaryColor,
           bottomOpacity: 0,
           elevation: 0.5,
-          title: title(controller: tabController),
+          title: title(controller: provider.controllerTab),
         ),
         body: ExtendedTabBarView(
-          controller: tabController,
-          children: [subPage(), discoverPage(), cityPage()],
+          controller: provider.controllerTab,
+          children: [Text('data'), DiscoverPage(), Text('data')],
         ));
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-
-  @override
-  void dispose() {
-    super.dispose();
-    print('我是frienddispos');
-  }
 }
 
-class discoverPage extends StatefulWidget {
-  discoverPage({Key key}) : super(key: key);
+//expandtab 有 bug singtick 要用provider 提供的 singtick
+
+class DiscoverPage extends StatefulWidget {
+  DiscoverPage({Key key}) : super(key: key);
 
   @override
-  _discoverPageState createState() => _discoverPageState();
+  _DiscoverPageState createState() => _DiscoverPageState();
 }
 
-class _discoverPageState extends State<discoverPage>
+class _DiscoverPageState extends State<DiscoverPage>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    print('dicover');
+
     double screenwidth = MediaQuery.of(context).size.width;
     return Column(
       // mainAxisSize: MainAxisSize.max,
@@ -271,11 +261,11 @@ class MainItem extends StatefulWidget {
   _MainItemState createState() => _MainItemState();
 }
 
-class _MainItemState extends State<MainItem>
-    with AutomaticKeepAliveClientMixin {
+class _MainItemState extends State<MainItem> {
   List xiaoData = [];
   int key = 1;
   ScrollController controller = ScrollController();
+  List newdata = [];
 
   @override
   void initState() {
@@ -298,39 +288,295 @@ class _MainItemState extends State<MainItem>
     setState(() {
       // print(re.data);
       xiaoData.addAll(re.data);
+      newdata = re.data;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print('000000000000');
     double screenwidth = MediaQuery.of(context).size.width;
-    return StaggeredGridView.countBuilder(
-      physics: ClampingScrollPhysics(),
+    double screenheight = MediaQuery.of(context).size.height;
+    if (xiaoData.isEmpty) {
+      return Container(
+        height: screenheight / 2,
+        alignment: Alignment.center,
+        child: Container(
+          width: 50,
+          child: BallPulseLoading(
+            ballStyle: BallStyle(
+              size: 8,
+              color: Colors.cyan,
+              ballType: BallType.solid,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return WaterfallFlow.builder(
       controller: controller,
-      primary: false,
+      physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      crossAxisCount: 4,
-      itemCount: xiaoData.length,
+      itemCount: xiaoData.length + 1,
+      gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: screenwidth * 0.01,
+        mainAxisSpacing: screenwidth * 0.01,
+        lastChildLayoutTypeBuilder: (index) => index == xiaoData.length
+            ? LastChildLayoutType.fullCrossAxisExtent
+            : LastChildLayoutType.none,
+      ),
       itemBuilder: (context, index) {
+        if (index == xiaoData.length) {
+          return _loading();
+        }
         return Item(
           data: xiaoData[index],
           index: index,
           category: widget.category,
         );
       },
-      staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
-      mainAxisSpacing: screenwidth * 0.01,
-      crossAxisSpacing: screenwidth * 0.01,
     );
+
+    // // SliverGrid(
+    // //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    // //         crossAxisCount: 2,
+    // //         mainAxisSpacing: 1.5,
+    // //         crossAxisSpacing: 1.5,
+    // //         childAspectRatio: 0.4),
+    // //     delegate:
+    // //         SliverChildBuilderDelegate((BuildContext context, int index) {
+    // //       return Item(
+    // //         data: xiaoData[index],
+    // //         index: index,
+    // //         category: widget.category,
+    // //       );
+    // //     })),
+    // //   SliverToBoxAdapter(
+    // //     child: StaggeredGridView.countBuilder(
+    // //       // physics: ClampingScrollPhysics(),
+    // //       // controller: controller,
+    // //       primary: false,
+    // //       shrinkWrap: true,
+    // //       crossAxisCount: 4,
+    // //       itemCount: xiaoData.length,
+    // //       itemBuilder: (context, index) {
+    // //         return Item(
+    // //           data: xiaoData[index],
+    // //           index: index,
+    // //           category: widget.category,
+    // //         );
+    // //       },
+    // //       staggeredTileBuilder: (int index) => StaggeredTile.fit(2),
+    // //       mainAxisSpacing: screenwidth * 0.01,
+    // //       crossAxisSpacing: screenwidth * 0.01,
+    // //     ),
+    // //   )
+
+    // if (xiaoData.isEmpty) {
+    //   return Container(
+    //     height: screenheight / 2,
+    //     alignment: Alignment.center,
+    //     child: Container(
+    //       width: 50,
+    //       child: BallPulseLoading(
+    //         ballStyle: BallStyle(
+    //           size: 8,
+    //           color: Colors.cyan,
+    //           ballType: BallType.solid,
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
+
+    // return SingleChildScrollView(
+    //   controller: controller,
+    //   physics: ClampingScrollPhysics(),
+    //   child: Column(
+    //     children: [
+    //       WaterfallFlow.builder(
+    //         physics: NeverScrollableScrollPhysics(),
+    //         shrinkWrap: true,
+    //         itemCount: xiaoData.length,
+    //         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+    //           crossAxisCount: 2,
+    //           crossAxisSpacing: screenwidth * 0.01,
+    //           mainAxisSpacing: screenwidth * 0.01,
+    //         ),
+    //         itemBuilder: (context, index) {
+    //           return Item(
+    //             data: xiaoData[index],
+    //             index: index,
+    //             category: widget.category,
+    //           );
+    //         },
+    //       ),
+    //       _loading()
+    //     ],
+    //   ),
+    // );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  Widget _loading() {
+    if (xiaoData.isNotEmpty) {
+      if (newdata.isEmpty) {
+        return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Text(
+            '没有更多数据了',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        );
+      }
+      return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Container(
+            width: 50,
+            child: BallPulseLoading(
+              ballStyle: BallStyle(
+                size: 8,
+                color: Colors.cyan,
+                ballType: BallType.solid,
+              ),
+            ),
+          ));
+    } else {
+      return Container();
+    }
+  }
 }
 
-class Item extends StatelessWidget {
-  const Item({Key key, this.data, this.index, this.category}) : super(key: key);
+class Item extends StatefulWidget {
+  Item({Key key, this.category, this.data, this.index}) : super(key: key);
+  final Map data;
+  final int index;
+  final String category;
+  @override
+  _ItemState createState() => _ItemState(this.category, this.data, this.index);
+}
+
+class _ItemState extends State<Item> {
+  final Map data;
+  final int index;
+  final String category;
+
+  _ItemState(this.category, this.data, this.index);
+  @override
+  Widget build(BuildContext context) {
+    print(11111111111111111);
+    double screenWith = MediaQuery.of(context).size.width;
+
+    return Container(
+        // height: 400,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                new MaterialPageRoute(
+                  builder: (context) {
+                    return Circle(
+                      data: index,
+                      category: category,
+                      item: data,
+                    );
+                  },
+                ),
+              );
+            },
+            //当hero组件中有max时会出现一处  hero源于目标必须一样，否则会溢出，比如同为图片
+            //出现重复是因为有页面是keepalive的，hero对象一直存在，改为不同即可，个人页面是变化的，所以hero的tag不重复
+
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5)),
+                    child: Hero(
+                      child: CachedNetworkImage(
+                        imageUrl: data['cover'],
+                        fit: BoxFit.fitWidth,
+                      ),
+                      tag: index.toString() + category,
+                    )),
+                Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(),
+                    child: Text(
+                      data['title'],
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                Container(
+                  margin: EdgeInsets.only(top: 10, bottom: 10),
+                  // padding: EdgeInsets.symmetric(horizontal: 5),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 25,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(data['userPic']),
+                            ),
+                          ),
+                          Container(
+                            width: 70,
+                            child: Text(
+                              data['userName'],
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey[600]),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            size: 20,
+                            color: Colors.redAccent,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 5, right: 5),
+                            child: Text(
+                              setData(data['sub']),
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            )));
+  }
+}
+
+class Item1 extends StatelessWidget {
+  const Item1({Key key, this.data, this.index, this.category})
+      : super(key: key);
   final Map data;
   final int index;
   final String category;
@@ -373,8 +619,8 @@ class Item extends StatelessWidget {
                         topLeft: Radius.circular(5),
                         topRight: Radius.circular(5)),
                     child: Hero(
-                      child: Image(
-                        image: NetworkImage(data['cover']),
+                      child: CachedNetworkImage(
+                        imageUrl: data['cover'],
                         fit: BoxFit.fitWidth,
                       ),
                       tag: index.toString() + category,

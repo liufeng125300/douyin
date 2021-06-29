@@ -92,6 +92,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
+  extended_list_library:
+    dependency: transitive
+    description:
+      name: extended_list_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   extended_tabs:
     dependency: "direct main"
     description:
@@ -152,7 +159,7 @@ packages:
       name: flutter_staggered_grid_view
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0"
+    version: "0.3.4"
   flutter_swiper:
     dependency: "direct main"
     description:
@@ -198,6 +205,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.3"
+  m_loading:
+    dependency: "direct main"
+    description:
+      name: m_loading
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
   marquee_flutter:
     dependency: "direct main"
     description:
@@ -441,6 +455,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
+  waterfall_flow:
+    dependency: "direct main"
+    description:
+      name: waterfall_flow
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.1"
   win32:
     dependency: transitive
     description:

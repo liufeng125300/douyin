@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:provider/provider.dart';
 import 'package:xiao/video.dart';
 
@@ -46,6 +47,7 @@ class _profileViewState extends State<profileView>
   Map userInfo = {};
   TabController _tabController;
   double expandheight;
+  List newdata = [];
 
   ScrollController controller = ScrollController();
   bool offsate = true;
@@ -103,12 +105,14 @@ class _profileViewState extends State<profileView>
       setState(() {
         print(re.data);
         videoData.addAll(re.data);
+        newdata = re.data;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
 
@@ -124,13 +128,64 @@ class _profileViewState extends State<profileView>
           controller: controller,
           slivers: <Widget>[
             _appbar(),
+            SliverToBoxAdapter(
+                child: Offstage(
+              child: Container(
+                  alignment: Alignment.center,
+                  width: screenWidth,
+                  height: screenHeight / 3,
+                  child: Container(
+                    child: BallPulseLoading(
+                      ballStyle: BallStyle(
+                        size: 8,
+                        color: Colors.cyan,
+                        ballType: BallType.solid,
+                      ),
+                    ),
+                    width: 50,
+                  )),
+              offstage: videoData.isNotEmpty,
+            )),
             // _buildBanner(),
             // _buildStickyBar(provider),
 
             // _buildStickyBar(),
             _buildList(),
+            SliverToBoxAdapter(child: _loading())
           ],
         ));
+  }
+
+  Widget _loading() {
+    if (videoData.isNotEmpty) {
+      if (newdata.isEmpty) {
+        return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Text(
+            '没有更多数据了',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        );
+      }
+      return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Container(
+            width: 50,
+            child: BallPulseLoading(
+              ballStyle: BallStyle(
+                size: 8,
+                color: Colors.cyan,
+                ballType: BallType.solid,
+              ),
+            ),
+          ));
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildTabBarBg(double width) {

@@ -28,8 +28,8 @@ dependencies:
   flutter_swiper : 1.1.5
   marquee_flutter: 
   dio:
-  flutter_staggered_grid_view:
-  #cached_network_image: ^1.1.1
+  flutter_staggered_grid_view: ^0.3.4
+ 
   cached_network_image:
   drag_container: 
   http: ^0.12.0+2
@@ -37,6 +37,8 @@ dependencies:
   after_layout:
   extended_tabs: 
  
+  m_loading: 
+  waterfall_flow:
 
 
   # The following adds the Cupertino Icons font to your application.

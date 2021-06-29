@@ -79,7 +79,7 @@ class _MainHomeState extends State<MainHome> with TickerProviderStateMixin {
   int currentPageIndex = 0;
   List<Widget> pages = [
     HomePageMain(),
-    FriendPage(),
+    NotePage(),
     AddPage(),
     MessagePage(),
     SelfPage()

@@ -36,7 +36,7 @@ class RecommendProvider extends State<StatefulWidget>
   String CurrentTypeUid;
   int test = 0;
   bool isplayingVideros = true;
-
+  TabController controllerTab;
   Map currentUserInfo;
 
   TabController tabs;
@@ -180,6 +180,7 @@ class RecommendProvider extends State<StatefulWidget>
     currentPage = 0;
     tabs = TabController(length: 10, vsync: this, initialIndex: 0);
     HomePageController = TabController(length: 2, vsync: this, initialIndex: 0);
+    controllerTab = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
   MainInfo maininfo = MainInfo(

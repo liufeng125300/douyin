@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:video_player/video_player.dart';
 import 'package:xiao/BottomSheet.dart';
 import 'package:xiao/RecommendProvider.dart';
@@ -142,6 +143,7 @@ class _profileViewState extends State<profileView>
 
   ScrollController controller = ScrollController();
   bool offsate = true;
+  List newdata = [];
 
   @override
   void dispose() {
@@ -204,12 +206,14 @@ class _profileViewState extends State<profileView>
       setState(() {
         print(re.data);
         videoData.addAll(re.data);
+        newdata = re.data;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
 
@@ -225,13 +229,64 @@ class _profileViewState extends State<profileView>
           controller: controller,
           slivers: <Widget>[
             _appbar(),
+            SliverToBoxAdapter(
+                child: Offstage(
+              child: Container(
+                  alignment: Alignment.center,
+                  width: screenWidth,
+                  height: screenHeight / 3,
+                  child: Container(
+                    child: BallPulseLoading(
+                      ballStyle: BallStyle(
+                        size: 8,
+                        color: Colors.cyan,
+                        ballType: BallType.solid,
+                      ),
+                    ),
+                    width: 50,
+                  )),
+              offstage: videoData.isNotEmpty,
+            )),
             // _buildBanner(),
             // _buildStickyBar(provider),
 
             // _buildStickyBar(),
             _buildList(),
+            SliverToBoxAdapter(child: _loading())
           ],
         ));
+  }
+
+  Widget _loading() {
+    if (videoData.isNotEmpty) {
+      if (newdata.isEmpty) {
+        return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Text(
+            '没有更多数据了',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        );
+      }
+      return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Container(
+            width: 50,
+            child: BallPulseLoading(
+              ballStyle: BallStyle(
+                size: 8,
+                color: Colors.cyan,
+                ballType: BallType.solid,
+              ),
+            ),
+          ));
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildTabBarBg(double width) {
@@ -1269,7 +1324,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -1298,10 +1353,6 @@ class _HomePageState extends State<HomePage>
       ],
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 class Tabbar extends StatefulWidget {

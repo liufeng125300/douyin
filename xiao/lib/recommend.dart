@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -53,7 +54,7 @@ class _RecomendState extends State<Recomend>
       loop: false,
       onIndexChanged: (index) {
         provider.setUid(videoData[index]['uid']);
-        if (index == videoData.length - 1) {
+        if (index == videoData.length - 2) {
           getData();
         }
 
@@ -420,9 +421,17 @@ class _VideoPlayerRecomendState extends State<VideoPlayerRecomend> {
           );
         } else {
           return Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          );
+              alignment: Alignment.center,
+              child: Container(
+                width: 50,
+                child: BallPulseLoading(
+                  ballStyle: BallStyle(
+                    size: 8,
+                    color: Colors.cyan,
+                    ballType: BallType.solid,
+                  ),
+                ),
+              ));
         }
       },
     );

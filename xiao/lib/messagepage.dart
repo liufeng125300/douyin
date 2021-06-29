@@ -6,6 +6,7 @@ class MessagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('message');
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,

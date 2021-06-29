@@ -8,6 +8,7 @@ import 'package:xiao/video.dart';
 
 import 'RecommendProvider.dart';
 import 'homePage.dart';
+import 'package:m_loading/m_loading.dart';
 
 class ProfileS extends StatefulWidget {
   ProfileS(
@@ -45,6 +46,7 @@ class _ProfileSState extends State<ProfileS> {
 
   @override
   Widget build(BuildContext context) {
+    print('profile');
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
     return profileView(
       provider: provider,
@@ -85,6 +87,7 @@ class _profileViewState extends State<profileView>
   bool isnull = false;
   Map userInfo;
   String currentUid;
+  List newdata = [];
 
   TabController _tabController;
   double expandheight;
@@ -146,12 +149,14 @@ class _profileViewState extends State<profileView>
       setState(() {
         print(re.data);
         videoData.addAll(re.data);
+        newdata = re.data;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         body: CustomScrollView(
@@ -160,22 +165,62 @@ class _profileViewState extends State<profileView>
           slivers: <Widget>[
             _appbar(),
             SliverToBoxAdapter(
-              child: Offstage(
-                offstage: isoffsate,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation(Colors.blue),
-                  ),
-                ),
-              ),
-            ),
+                child: Offstage(
+              child: Container(
+                  alignment: Alignment.center,
+                  width: screenWidth,
+                  height: screenHeight / 3,
+                  child: Container(
+                    child: BallPulseLoading(
+                      ballStyle: BallStyle(
+                        size: 8,
+                        color: Colors.cyan,
+                        ballType: BallType.solid,
+                      ),
+                    ),
+                    width: 50,
+                  )),
+              offstage: videoData.isNotEmpty,
+            )),
             layout_List(
               videoData: videoData,
               isloading: setoffsate,
             ),
+            SliverToBoxAdapter(child: _loading())
           ],
         ));
+  }
+
+  Widget _loading() {
+    if (videoData.isNotEmpty) {
+      if (newdata.isEmpty) {
+        return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Text(
+            '没有更多数据了',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        );
+      }
+      return Container(
+          width: screenWidth,
+          height: 30,
+          alignment: Alignment.center,
+          child: Container(
+            width: 50,
+            child: BallPulseLoading(
+              ballStyle: BallStyle(
+                size: 8,
+                color: Colors.cyan,
+                ballType: BallType.solid,
+              ),
+            ),
+          ));
+    } else {
+      return Container();
+    }
   }
 
   Widget _appbar() {

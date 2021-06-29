@@ -1,6 +1,6 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -357,9 +357,17 @@ class _VideoPalyerSMState extends State<VideoPalyerSM> {
           );
         } else {
           return Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          );
+              alignment: Alignment.center,
+              child: Container(
+                width: 50,
+                child: BallPulseLoading(
+                  ballStyle: BallStyle(
+                    size: 8,
+                    color: Colors.cyan,
+                    ballType: BallType.solid,
+                  ),
+                ),
+              ));
         }
       },
     );

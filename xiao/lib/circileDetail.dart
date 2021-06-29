@@ -1,11 +1,130 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:xiao/main.dart';
-import 'package:xiao/sameCity.dart';
 
-class Circle extends StatelessWidget {
-  const Circle({Key key, this.data, this.category, @required this.item})
+class Circle extends StatefulWidget {
+  Circle({Key key, this.data, this.category, @required this.item})
+      : super(key: key);
+  final int data;
+  final String category;
+  final Map item;
+  @override
+  _CircleState createState() =>
+      _CircleState(this.data, this.category, this.item);
+}
+
+class _CircleState extends State<Circle> {
+  final int data;
+  final String category;
+  final Map item;
+
+  _CircleState(this.data, this.category, this.item);
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40),
+          child: AppBar(
+            elevation: 0.0,
+            centerTitle: true,
+            title: Center(
+              child: title(
+                userPic: item['userPic'],
+                userName: item['userName'],
+              ),
+            ),
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+          )),
+      body: Container(
+        child: MainContent(
+          data: data,
+          category: category,
+          item: item,
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Column(
+          children: [
+            Divider(
+              height: 1,
+              color: Colors.black12,
+            ),
+            Expanded(
+                child: Container(
+              alignment: Alignment.center,
+              // color: Colors.yellow,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+
+                      // margin: EdgeInsets.only(left: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(15)),
+                      width: 0.4 * screenWidth,
+                      height: 30,
+                      child: TextField(
+                        // maxLength: 50,
+                        keyboardType: TextInputType.multiline,
+                        style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                        decoration: InputDecoration(
+                            // border: OutlineInputBorder(),
+                            border: InputBorder.none,
+                            hintText: '说点什么...',
+                            hintStyle: TextStyle(color: Colors.grey[600])),
+                      )),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.favorite_border),
+                      Text(
+                        '1836',
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star_border),
+                      Text(
+                        '1788',
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(IconData(0xe642, fontFamily: 'iconfont')),
+                      Text(
+                        '98',
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Circle1 extends StatelessWidget {
+  const Circle1({Key key, this.data, this.category, @required this.item})
       : super(key: key);
   final int data;
   final String category;
