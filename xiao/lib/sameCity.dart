@@ -203,12 +203,35 @@ class item extends StatelessWidget {
           },
         ));
       },
-      child: Hero(
-        child: Image(
-          image: NetworkImage(data['cover']),
-          fit: BoxFit.fitWidth,
-        ),
-        tag: index.toString() + 'false',
+      child: Stack(
+        children: [
+          Container(
+              child: Hero(
+            tag: index.toString() + 'false',
+            child: Image(
+              image: NetworkImage(data['cover']),
+              fit: BoxFit.fitWidth,
+            ),
+          )),
+          Positioned(
+              bottom: 5,
+              left: 5,
+              child: Row(
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(data['avatar_larger']),
+                    ),
+                  ),
+                  Text(
+                    '  0.1km',
+                    style: TextStyle(color: Colors.white),
+                  )
+                ],
+              ))
+        ],
       ),
     );
   }

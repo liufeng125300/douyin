@@ -328,7 +328,7 @@ class _profileViewState extends State<profileView>
               child: Stack(
                 children: [
                   Container(
-                    width: 2000,
+                    // width: 2000,
                     child: Image(
                       image: NetworkImage(videoData[index]['cover']),
                       fit: BoxFit.fitWidth,
