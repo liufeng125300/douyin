@@ -261,7 +261,8 @@ class MainItem extends StatefulWidget {
   _MainItemState createState() => _MainItemState();
 }
 
-class _MainItemState extends State<MainItem> {
+class _MainItemState extends State<MainItem>
+    with AutomaticKeepAliveClientMixin {
   List xiaoData = [];
   int key = 1;
   ScrollController controller = ScrollController();
@@ -450,6 +451,10 @@ class _MainItemState extends State<MainItem> {
       return Container();
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class Item extends StatefulWidget {
